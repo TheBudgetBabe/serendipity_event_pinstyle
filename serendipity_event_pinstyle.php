@@ -35,6 +35,7 @@ class serendipity_event_pinstyle extends serendipity_event
 
         $conf_array[] = 'entry_limit';
         $conf_array[] = 'row_limit';
+        $conf_array[] = 'use_extended';
         $propbag->add('configuration', $conf_array);
     }
 
@@ -51,6 +52,12 @@ class serendipity_event_pinstyle extends serendipity_event
                 $propbag->add('description',    PLUGIN_EVENT_PINSTYLE_ROW_LIMIT_DESC);
                 $propbag->add('default',        '2');
                 $propbag->add('type',           'string');
+                break;
+            case 'use_extended':
+                $propbag->add('name',           PLUGIN_EVENT_PINSTYLE_USE_EXTENDED);
+                $propbag->add('description',    PLUGIN_EVENT_PINSTYLE_USE_EXTENDED_DESC);
+                $propbag->add('default',        false);
+                $propbag->add('type',           'boolean');
                 break;
           default:
             return false;
@@ -77,7 +84,11 @@ class serendipity_event_pinstyle extends serendipity_event
                     break;
                 case 'frontend_display':
                     if ($serendipity['view'] == 'categories') {
-                        $imageArr = $this->get_first_image($eventData['body'] . $eventData['extended']);
+                        if ($this->get_config('use_extended')) {
+                            $imageArr = $this->get_first_image($eventData['body'] . $eventData['extended']);
+                        } else {
+                            $imageArr = $this->get_first_image($eventData['body']);
+                        }
                         $eventData['cardImageSrc'] = $imageArr['src'];
                         $eventData['cardImageAlt'] = $imageArr['alt'];
                     }
