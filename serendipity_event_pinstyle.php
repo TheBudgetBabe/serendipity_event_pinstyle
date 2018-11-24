@@ -83,6 +83,8 @@ class serendipity_event_pinstyle extends serendipity_event
                 case 'entry_display':
                     break;
                 case 'frontend_display':
+                    // if the view is 'categories', get the first image in the post,
+                    // add the image source and alt text to the entry
                     if ($serendipity['view'] == 'categories') {
                         if ($this->get_config('use_extended')) {
                             $imageArr = $this->get_first_image($eventData['body'] . $eventData['extended']);
@@ -94,6 +96,8 @@ class serendipity_event_pinstyle extends serendipity_event
                     }
                     break;
                 case 'genpage':
+                    // if the view is 'categories', set the row limit (TODO) and
+                    // the fetchLimit on the global $serendipity variable
                     if ($serendipity['view'] == 'categories') {
                         $serendipity['rowLimit'] = $this->get_config('row_limit');
                         $serendipity["fetchLimit"] = $this->get_config('entry_limit');
@@ -109,6 +113,12 @@ class serendipity_event_pinstyle extends serendipity_event
         }
     }
 
+    /**
+     * Get the first image from a block of HTML
+     *
+     * @param  string $html
+     * @return array $image
+     */
     function get_first_image($html) {
         $image = [
             "alt" => null,
@@ -124,12 +134,13 @@ class serendipity_event_pinstyle extends serendipity_event
         libxml_use_internal_errors($internalErrors);
 
         $tags = $doc->getElementsByTagName('img');
-        if (sizeof($tags) == 0 || $tags == null) {
+        if (sizeof($tags) == 0 || $tags == null || $tags[0] == null) {
             return $image;
         }
 
         $image['src'] = $tags[0]->getAttribute('src');
         $image['alt'] = $tags[0]->getAttribute('alt'); 
+
         return $image;
       }
 }
