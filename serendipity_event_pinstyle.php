@@ -124,7 +124,8 @@ class serendipity_event_pinstyle extends serendipity_event
             "alt" => null,
             "image" => null
         ];
-        if ($html == '' || sizeof($html) == 0) {
+
+        if (empty($html)) {
             return $image;
         }
 
